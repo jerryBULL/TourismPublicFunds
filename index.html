@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title></title>
+        <meta name="description" content="">
+
+        <link rel="icon" href="./Content/Image/Favicon/favicon.ico" sizes="any"> <!-- 瀏覽器 icon -->
+        <link rel="shortcut icon" href="./Content/Image/Favicon/favicon.ico" type="image/x-icon"> <!-- 網站在瀏覽器標簽欄和書簽中顯示的圖標 -->
+        <meta property="og:image" content="./Content/Image/Favicon/512x512.png" /> <!-- 分享網頁時會顯示的縮圖 -->
+        <meta name="mobile-web-app-capable" content="yes"> <!-- 是否使用全屏顯示 -->
+
+        <!-- iOS Safari Set Up -->
+        <link rel="apple-touch-icon" href="./Content/Image/Favicon/182x182.png"> <!-- 新增到桌面時的圖示 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"> <!-- 新增到桌面時 開啟後 上方狀態欄顯示顏色  -->
+        <meta name="apple-mobile-web-app-capable" content="yes"> <!-- 是否使用全屏顯示 -->
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="./Content/CSS/base.css" />
+        <link rel="stylesheet" href="./Content/CSS/style.css" />
+
+        <!-- JS -->
+        <script src="./Content/JS/vue.cjs.min.js"></script>
+        <script src="./Content/JS/axios.min.js"></script>
+        <script src="./Content/JS/base.js"></script>
+    </head>
+    <body>
+        <div id="vue--js" class="wh100">
+            <div class="login page">
+                <div class="wallet border_box">
+                    <p class="title">旅遊公用金</p>
+                    <hr>
+
+                    <div class="content">
+                        <div class="compose-input">
+                            <p>帳號</p>
+                            <input type="text" v-model="account">
+                        </div>
+                        <div class="spaceH1"></div>
+
+                        <div class="compose-input password">
+                            <p>密碼</p>
+                            <input :type="isShowPassword ? 'text' : 'password'" v-model="password">
+                            <div class="eye" :class="[isShowPassword ? 'open' : 'close']" @click="isShowPassword = !isShowPassword"></div>
+                        </div>
+                        <div class="spaceH1"></div>
+
+                        <button class="confirm" @click="Login">登入</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup wh100" :class="{'hide': !isOpenLoadingPopup}">
+                <div class="loading"></div>
+            </div>
+        </div>
+
+        <script>
+            let main = new Vue({
+                el: "#vue--js",
+                data: function(){
+                    return{
+                        isLoading: false,
+                        isOpenLoadingPopup: false,
+                        isShowPassword: false,
+                        //
+                        account: "",
+                        password: "",
+                    }
+                },
+                mounted() {
+                    if(extCookie.getCookie("_account") && extCookie.getCookie("_token")){
+                        location.href = "./home.html";
+                    }
+
+                    if(extCookie.getCookie("_account")){
+                        this.account = extCookie.getCookie("_account");
+                    }
+                },
+                methods: {
+                    ArrayToQueryString: function (params) {
+                        var queryString = '';
+
+                        let keys   = Object.keys(params);
+                        let values = Object.values(params);
+
+                        for (var i = 0; i < keys.length; i++) {
+                            var key = encodeURIComponent(keys[i]);
+                            var value = encodeURIComponent(values[i]);
+                            if (i > 0) {
+                                queryString += '&'; // 添加参数分隔符
+                            }
+                            queryString += key + '=' + value;
+                        }
+
+                        return queryString;
+                    },
+                    //
+                    Login: function() {
+                        let v_this = this;
+
+                        if(v_this.account == "" || v_this.password == ""){
+                            return;
+                        }
+
+                        if(v_this.isLoading){
+                            return;
+                        }
+                        v_this.isLoading = true;
+                        v_this.isOpenLoadingPopup = true;
+
+                        let callBackFun = (res) => {
+                            v_this.isOpenLoadingPopup = false;
+
+                            if(res.IsSuccess){
+                                extCookie.setCookie("_account", v_this.account);
+                                extCookie.setCookie("_token", res.Value);
+
+                                location.href = "./home.html";
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "Login",
+                        }, {
+                            account: v_this.account,
+                            pwd: v_this.password,
+                        },callBackFun);
+                    },
+                    //
+                    CallApi: function(getParams, postParams, callBackFun) {
+                        let v_this = this;
+                        let url = "https://script.google.com/macros/s/AKfycbwQfW_XT2IVyUWzrpl3U5RF9fFVqCRNHlUrFNT7zNwqQUqy6v6gmQ9LADAJtpR5ef5i1A/exec";
+
+                        axiosAjax.RequsetPost(url, getParams, postParams)
+                            .then(res => {
+                                v_this.isLoading = false;
+
+                                if(res.status !== 200){
+                                    throw new Error();
+                                }
+
+                                callBackFun(res.data);
+                            })
+                            .catch(error => {
+                                v_this.isLoading = false;
+                                v_this.isOpenLoadingPopup = false;
+
+                                console.error(error);
+                            });
+                    },
+                }
+            });
+        </script>
+    </body>
+</html>

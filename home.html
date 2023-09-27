@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <title></title>
+        <meta name="description" content="">
+
+        <link rel="icon" href="./Content/Image/Favicon/favicon.ico" sizes="any"> <!-- 瀏覽器 icon -->
+        <link rel="shortcut icon" href="./Content/Image/Favicon/favicon.ico" type="image/x-icon"> <!-- 網站在瀏覽器標簽欄和書簽中顯示的圖標 -->
+        <meta property="og:image" content="./Content/Image/Favicon/512x512.png" /> <!-- 分享網頁時會顯示的縮圖 -->
+        <meta name="mobile-web-app-capable" content="yes"> <!-- 是否使用全屏顯示 -->
+
+        <!-- iOS Safari Set Up -->
+        <link rel="apple-touch-icon" href="./Content/Image/Favicon/182x182.png"> <!-- 新增到桌面時的圖示 -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black"> <!-- 新增到桌面時 開啟後 上方狀態欄顯示顏色  -->
+        <meta name="apple-mobile-web-app-capable" content="yes"> <!-- 是否使用全屏顯示 -->
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="./Content/CSS/base.css" />
+        <link rel="stylesheet" href="./Content/CSS/style.css" />
+
+        <!-- JS -->
+        <script src="./Content/JS/vue.cjs.min.js"></script>
+        <script src="./Content/JS/axios.min.js"></script>
+        <script src="./Content/JS/base.js"></script>
+    </head>
+    <body>
+        <div id="vue--js" class="wh100">
+            <header>
+                旅遊公用金
+            </header>
+
+            <div class="navbar">
+                <button @click="ChangeNavbar('home')" :class="{'active': navbar == 'home'}">首頁</button>
+                <button @click="ChangeNavbar('expenseItem')" :class="{'active': navbar == 'expenseItem'}">花費項目</button>
+                <button @click="ChangeNavbar('operationRecord')" :class="{'active': navbar == 'operationRecord'}">操作紀錄</button>
+            </div>
+
+            <hr>
+
+            <div class="page">
+                <section class="home" :class="{'hide': navbar != 'home'}">
+                    <div class="wallet border_box">
+                        <div class="title">錢包</div>
+                        <div class="content">
+                            <div class="compose-input">
+                                <p>原始金額</p>
+                                <input type="text" v-model="originalAmount" disabled>
+                            </div>
+                            <div class="spaceH1"></div>
+                            <div class="compose-input">
+                                <p>餘額　　</p>
+                                <input type="text" v-model="balance" disabled>
+                            </div>
+                            <div class="spaceH1"></div>
+
+                            <hr>
+                            <div class="spaceH1"></div>
+
+                            <div class="compose-input">
+                                <p>餘額調整</p>
+                                <button @click="balanceTab = 'increase'" :class="{'active': balanceTab == 'increase'}">增加</button>
+                                <button @click="balanceTab = 'reduce'" :class="{'active': balanceTab == 'reduce'}">減少</button>
+                            </div>
+                            <div class="spaceH1"></div>
+
+                            <div class="compose-input">
+                                <input type="number" v-model="changeAmount">
+                            </div>
+                            <div class="spaceH1"></div>
+
+                            <button class="confirm" @click="OperationWallet">確認</button>
+                        </div>
+                    </div>
+    
+                    <div class="add_expense_item border_box">
+                        <div class="title">添加花費項目</div>
+
+                        <div class="content">
+                            <div class="compose-input">
+                                <p>項目名稱</p>
+                                <input type="text" v-model="addItem">
+                            </div>
+                            <div class="spaceH1"></div>
+
+                            <div class="compose-input">
+                                <p>金額　　</p>
+                                <input type="number" v-model="addItemAmount">
+                            </div>
+                            <div class="spaceH1"></div>
+
+                            <button class="confirm" @click="AddExpenseItem">確認</button>
+                        </div>
+                    </div>
+                </section>
+    
+                <section class="expense_item" :class="{'hide': navbar != 'expenseItem'}">
+                    <div class="border_box">
+                        <div class="title">花費項目</div>
+
+                        <div v-if="!isExpenseItemsLoading && expenseItems.length == 0" class="empty_data"></div>
+                        <div v-if="isExpenseItemsLoading" class="loading"></div>
+
+                        <div v-if="!isExpenseItemsLoading && expenseItems.length != 0" class="expense_item_list">
+                            <div v-for="(info, idx) in expenseItems" :key="idx">
+                                <div class="border_box">
+                                    <div v-if="updateExpenseItems.id !== idx" class="content">
+                                        <div class="compose-input">
+                                            <p>項目</p>
+                                            <input type="text" :value="info[0]" disabled>
+                                        </div>
+                                        <div class="spaceH1"></div>
+    
+                                        <div class="compose-input">
+                                            <p>金額</p>
+                                            <input type="text" :value="info[1]" disabled>
+                                        </div>
+                                        <div class="spaceH1"></div>
+    
+                                        <div class="compose-input">
+                                            <p>時間</p>
+                                            <input type="text" :value="info[3]" disabled>
+                                        </div>
+                                        <div class="spaceH1"></div>
+    
+                                        <div class="action_box">
+                                            <button class="update" @click="OpenUpdateExpenseItem(idx, info)">修改</button>
+                                            <button class="delete" @click="DeleteExpenseItem(idx)">刪除</button>
+                                        </div>
+                                    </div>
+
+                                    <div v-else class="content">
+                                        <div class="compose-input">
+                                            <p>項目</p>
+                                            <input type="text" v-model="updateExpenseItems.item">
+                                        </div>
+                                        <div class="spaceH1"></div>
+    
+                                        <div class="compose-input">
+                                            <p>金額</p>
+                                            <input type="number" v-model="updateExpenseItems.changeAmount">
+                                        </div>
+                                        <div class="spaceH1"></div>
+    
+                                        <div class="compose-input">
+                                            <p>時間</p>
+                                            <input type="text" :value="info[3]" disabled>
+                                        </div>
+                                        <div class="spaceH1"></div>
+
+                                        <div class="action_box">
+                                            <button class="confirm" @click="UpdateExpenseItem(idx)">確認</button>
+                                            <button class="close" @click="CloseUpdateExpenseItem()">關閉</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spaceH1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+    
+                <section class="operation_record" :class="{'hide': navbar != 'operationRecord'}">
+                    <div class="border_box">
+                        <div class="title">操作紀錄</div>
+
+                        <div v-if="!isOperationRecordsLoading && operationRecords.length == 0" class="empty_data"></div>
+                        <div v-if="isOperationRecordsLoading" class="loading"></div>
+
+                        <div v-if="!isOperationRecordsLoading && operationRecords.length != 0" class="operation_record_list">
+                            <div v-for="(info, idx) in operationRecords" :key="idx">
+                                <div class="border_box">
+                                    <div class="content">
+                                        <div class="compose-input">
+                                            <p>項目　　</p>
+                                            <input type="text" :value="info[0]" disabled>
+                                        </div>
+                                        <div class="spaceH0_75"></div>
+    
+                                        <div class="compose-input">
+                                            <p>操作行為</p>
+                                            <input type="text" :value="info[1]" disabled>
+                                        </div>
+                                        <div class="spaceH0_75"></div>
+    
+                                        <div class="compose-input">
+                                            <p>改動金額</p>
+                                            <input type="text" :value="info[2]" disabled>
+                                        </div>
+                                        <div class="spaceH0_75"></div>
+    
+                                        <div class="compose-input">
+                                            <p>餘額　　</p>
+                                            <input type="text" :value="info[3]" disabled>
+                                        </div>
+                                        <div class="spaceH0_75"></div>
+    
+                                        <div class="compose-input">
+                                            <p>時間　　</p>
+                                            <input type="text" :value="info[4]" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="operationRecords.length != idx + 1" class="spaceH1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pagination">
+                        <div class="arrow prev" @click="PrevOperationRecordsPage()"></div>
+                        <div class="page" v-for="page in operationRecordsPages" :class="{'active': page == operationRecordsPage}"
+                         @click="ChangeOperationRecordsPage(page)">
+                            {{ page }}
+                        </div>
+                        <div class="arrow next"@click="NextOperationRecordsPage()"></div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="popup wh100" :class="{'hide': !isOpenLoadingPopup}">
+                <div class="loading"></div>
+            </div>
+        </div>
+
+        <script>
+            let main = new Vue({
+                el: "#vue--js",
+                data: function(){
+                    return{
+                        isLoading: false,
+                        isOpenLoadingPopup: false,
+                        //
+                        navbar: "home",
+                        balanceTab: "increase",
+                        //
+                        balance: "--",
+                        originalAmount: "--",
+                        changeAmount: "",
+                        //
+                        addItem: "",
+                        addItemAmount: "",
+                        //
+                        isExpenseItemsLoading: false,
+                        expenseItems: [],
+                        updateExpenseItems: {
+                            id: "",
+                            item: "",
+                            changeAmount: "",
+                        },
+                        //
+                        isOperationRecordsLoading: false,
+                        operationRecords: [],
+                        operationRecordsPage: 1,
+                        operationRecordsPages: 1,
+                    }
+                },
+                mounted() {
+                    if(extCookie.getCookie("_account") == "" || extCookie.getCookie("_token") == ""){
+                        location.href = "./";
+                    }else{
+                        this.GetWallet();
+                    }
+                },
+                methods: {
+                    ChangeNavbar: function(navbar) {
+                        if(this.navbar == navbar) return;
+
+                        switch(navbar){
+                            case "expenseItem":
+                                this.GetExpenseItems();
+                                break;
+                            case "operationRecord":
+                                this.GetOperationRecords(1);
+                                break;
+                        }
+
+                        this.navbar = navbar;
+                    },
+                    ChangeBalanceTab: function(tab) {
+                        this.balanceTab = tab;
+                    },
+                    ChangeOperationRecordsPage: function(page) {
+                        if(page == this.operationRecordsPage){
+                            return;
+                        }
+
+                        this.operationRecordsPage = page;
+                        this.GetOperationRecords(page);
+                    },
+                    PrevOperationRecordsPage: function() {
+                        let page = this.operationRecordsPage - 1;
+
+                        if(page < 1 || page == this.operationRecordsPage){
+                            return;
+                        }
+
+                        this.operationRecordsPage = page;
+                        this.GetOperationRecords(page);
+                    },
+                    NextOperationRecordsPage: function() {
+                        let page = this.operationRecordsPage + 1;
+
+                        if(page > this.operationRecordsPages || page == this.operationRecordsPage){
+                            return;
+                        }
+
+                        this.operationRecordsPage = page;
+                        this.GetOperationRecords(page);
+                    },
+                    OpenUpdateExpenseItem: function(idx, itemInfo) {
+                        this.updateExpenseItems.id = idx;
+                        this.updateExpenseItems.item = itemInfo[0];
+                        this.updateExpenseItems.changeAmount = itemInfo[1];
+                    },
+                    CloseUpdateExpenseItem: function() {
+                        this.updateExpenseItems = {
+                            id: "",
+                            item: "",
+                            changeAmount: "",
+                        };
+                    },
+                    //
+                    ArrayToQueryString: function (params) {
+                        var queryString = '';
+
+                        let keys   = Object.keys(params);
+                        let values = Object.values(params);
+
+                        for (var i = 0; i < keys.length; i++) {
+                            var key = encodeURIComponent(keys[i]);
+                            var value = encodeURIComponent(values[i]);
+                            if (i > 0) {
+                                queryString += '&'; // 添加参数分隔符
+                            }
+                            queryString += key + '=' + value;
+                        }
+
+                        return queryString;
+                    },
+                    //
+                    GetWallet: function() {
+                        let v_this = this;
+
+                        v_this.balance        = "--";
+                        v_this.originalAmount = "--";
+
+                        let callBackFun = (res) => {
+                            if(res.IsSuccess){
+                                v_this.balance        = res.Value.balance;
+                                v_this.originalAmount = res.Value.original_amount;
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "GetWallet",
+                        }, callBackFun);
+                    },
+                    GetExpenseItems: function() {
+                        let v_this = this;
+
+                        v_this.expenseItems = [];
+                        v_this.isExpenseItemsLoading = true;
+
+                        let callBackFun = (res) => {
+                            v_this.isExpenseItemsLoading = false;
+
+                            if(res.IsSuccess){
+                                v_this.expenseItems = res.Value;
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "GetExpenseItems",
+                        }, callBackFun);
+                    },
+                    GetOperationRecords: function(page) {
+                        let v_this = this;
+
+                        v_this.operationRecords = [];
+                        v_this.isOperationRecordsLoading = true;
+
+                        let callBackFun = (res) => {
+                            v_this.isOperationRecordsLoading = false;
+
+                            if(res.IsSuccess){
+                                v_this.operationRecords      = res.Value.operation_record_list;
+                                v_this.operationRecordsPages = res.Value.pages;
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "GetOperationRecords",
+                            page: page,
+                        }, callBackFun);
+                    },
+                    OperationWallet: function() {
+                        let v_this = this;
+
+                        if(v_this.changeAmount == ""){
+                            return;
+                        }
+
+                        if(v_this.isLoading){
+                            return;
+                        }
+                        v_this.isLoading = true;
+                        v_this.isOpenLoadingPopup = true;
+
+                        let callBackFun = (res) => {
+                            v_this.isOpenLoadingPopup = false;
+
+                            if(res.IsSuccess){
+                                if(v_this.balanceTab === "increase"){
+                                    v_this.balance        = parseInt(v_this.balance) + parseInt(v_this.changeAmount);
+                                    v_this.originalAmount = parseInt(v_this.originalAmount) + parseInt(v_this.changeAmount);
+                                }else{
+                                    v_this.balance        = parseInt(v_this.balance) - parseInt(v_this.changeAmount);
+                                    v_this.originalAmount = parseInt(v_this.originalAmount) - parseInt(v_this.changeAmount);
+                                }
+
+                                v_this.changeAmount = "";
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "OperationWallet",
+                            action: v_this.balanceTab,
+                            change_amount: v_this.changeAmount,
+                        }, callBackFun);
+                    },
+                    AddExpenseItem: function() {
+                        let v_this = this;
+
+                        if(v_this.addItem == "" || v_this.addItemAmount == ""){
+                            return;
+                        }
+
+                        if(v_this.isLoading){
+                            return;
+                        }
+                        v_this.isLoading = true;
+                        v_this.isOpenLoadingPopup = true;
+
+                        let callBackFun = (res) => {
+                            v_this.isOpenLoadingPopup = false;
+
+                            if(res.IsSuccess){
+                                v_this.addItem       = "";
+                                v_this.addItemAmount = "";
+
+                                v_this.GetWallet();
+                                v_this.ChangeNavbar("expenseItem");
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "AddExpenseItem",
+                            item: v_this.addItem,
+                            change_amount: v_this.addItemAmount,
+                        }, callBackFun);
+                    },
+                    UpdateExpenseItem: function(idx) {
+                        let v_this = this;
+
+                        if(v_this.isLoading){
+                            return;
+                        }
+                        v_this.isLoading = true;
+                        v_this.isOpenLoadingPopup = true;
+
+                        let callBackFun = (res) => {
+                            v_this.isOpenLoadingPopup = false;
+
+                            if(res.IsSuccess){
+                                v_this.GetWallet();
+                                v_this.GetExpenseItems();
+                                v_this.CloseUpdateExpenseItem();
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "UpdateExpenseItem",
+                            id: v_this.updateExpenseItems.id,
+                            item: v_this.updateExpenseItems.item,
+                            change_amount: v_this.updateExpenseItems.changeAmount,
+                        }, callBackFun);
+                    },
+                    DeleteExpenseItem: function(idx) {
+                        let v_this = this;
+
+                        if(v_this.isLoading){
+                            return;
+                        }
+                        v_this.isLoading = true;
+                        v_this.isOpenLoadingPopup = true;
+
+                        let callBackFun = (res) => {
+                            v_this.isOpenLoadingPopup = false;
+
+                            if(res.IsSuccess){
+                                v_this.GetWallet();
+
+                                v_this.expenseItems.splice(idx, 1);
+                            }else{
+                                alert(res.Message);
+                            }
+                        };
+
+                        v_this.CallApi({
+                            method: "DeleteExpenseItem",
+                            id: idx,
+                        }, callBackFun);
+                    },
+                    //
+                    CallApi: function(getParams, callBackFun) {
+                        let v_this = this;
+                        let url = "https://script.google.com/macros/s/AKfycbwQfW_XT2IVyUWzrpl3U5RF9fFVqCRNHlUrFNT7zNwqQUqy6v6gmQ9LADAJtpR5ef5i1A/exec";
+
+                        let postParams = {
+                            account: extCookie.getCookie("_account"),
+                            pwd: extCookie.getCookie("_token"),
+                        }
+
+                        axiosAjax.RequsetPost(url, getParams, postParams)
+                            .then(res => {
+                                v_this.isLoading = false;
+
+                                if(res.status !== 200){
+                                    throw new Error();
+                                }
+
+                                if(res.data.Value == "login_timeout"){
+                                    extCookie.delCookie("_token");
+
+                                    location.href = "./";
+                                }
+
+                                callBackFun(res.data);
+                            })
+                            .catch(error => {
+                                v_this.isLoading = false;
+                                v_this.isOpenLoadingPopup = false;
+
+                                console.error(error);
+                            });
+                    },
+                }
+            });
+        </script>
+    </body>
+</html>

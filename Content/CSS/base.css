@@ -1,0 +1,100 @@
+*{
+    margin: 0;
+    padding: 0;
+    outline:none;
+    box-sizing: border-box;
+}
+
+ul,li,ol{
+    list-style-type: none;
+}
+
+h1,h2,h3,h4,h5,h6{
+    font-weight: 0;
+}
+
+a{
+    text-decoration: none;
+}
+
+.hide{
+    display: none !important;
+}
+
+/* flex */
+.flex-center{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flex-between {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.flex-around{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+/* 固定寬高 */
+.wh100{
+    width: 100%;
+    height: 100%;
+}
+.vw25{
+    width: 25vw !important;
+}
+.vw50{
+    width: 50vw !important;
+}
+.vw75{
+    width: 75vw !important;
+}
+.vw100{
+    width: 100vw !important;
+}
+.vh25{
+    height: 25vh !important;
+}
+.vh50{
+    height: 50vh !important;
+}
+.vh75{
+    height: 75vh !important;
+}
+.vh100{
+    height: 100vh !important;
+}
+
+/* text-align */
+.text-start{
+    text-align: start;
+}
+.text-center{
+    text-align: center;
+}
+.text-end{
+    text-align: end;
+}
+
+/* 空行 */
+.spaceH0_75{
+    height: 0.75rem;
+}
+.spaceH1{
+    height: 1rem;
+}
+.spaceH1_25{
+    height: 1.25rem;
+}
+.spaceH1_5{
+    height: 1.5rem;
+}
+.spaceH1_75{
+    height: 1.75rem;
+}
+.spaceH2{
+    height: 2rem;
+}
