@@ -27,7 +27,7 @@
         <script src="./Content/JS/base.js"></script>
     </head>
     <body>
-        <div id="vue--js" class="wh100">
+        <div id="vue--js" class="wh100 page_width_limit">
             <div class="login page">
                 <div class="wallet border_box">
                     <p class="title">旅遊公用金</p>
@@ -115,7 +115,7 @@
                     //
                     CallApi: function(getParams, callBackFun) {
                         let v_this = this;
-                        let url = "https://script.google.com/macros/s/AKfycbxCvdsen53ycVIfv_DTUhyHLIS24SyHURBucXPM5G3yNnaJMgCbnSom2aoyUIGkG-5DGg/exec";
+                        let url = "https://script.google.com/macros/s/AKfycbzlCRm3-UNRV0LcpzBz8T3pAJ5V1XQtEoYnQ9mjxCb7NKKyUguWFI5Q2mX_UDlBr3IDGQ/exec";
 
                         axiosAjax.RequsetGet(url, getParams)
                             .then(res => {

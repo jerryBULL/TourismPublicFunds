@@ -8,6 +8,7 @@ html {
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: #74BAD8;
 }
 
 header {
@@ -21,22 +22,28 @@ header {
   height: 50px;
 }
 
+.page_width_limit {
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #fff;
+}
+
 .navbar {
   display: flex;
-  margin: 15px 0;
+  margin: 20px 0;
 }
 .navbar button {
   flex: 1;
   margin: 0 5px;
   font-size: 20px;
   color: #fff;
-  background-color: #74BAD8;
+  background-color: #0F719B;
   border: none;
   border-radius: 5px;
   height: 40px;
 }
 .navbar button.active {
-  background-color: #0F719B;
+  background-color: #74BAD8;
 }
 
 hr {
@@ -51,7 +58,7 @@ hr {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 5px;
+  margin-top: 10px;
 }
 .pagination .arrow {
   background-image: url("../Image/arrow.png");
@@ -69,6 +76,7 @@ hr {
 .pagination .page {
   color: #d7d7d7;
   font-size: 17px;
+  padding: 0px 10px;
 }
 .pagination .page.active {
   color: #000;
@@ -113,8 +121,8 @@ hr {
   }
 }
 .page {
-  height: calc(100% - 122px);
-  padding: 10px;
+  height: calc(100% - 132px);
+  padding: 20px 10px;
 }
 .page .border_box {
   border: 2px solid #4D9FC2;
@@ -159,6 +167,7 @@ hr {
   font-size: 20px;
   width: 100%;
   flex: 1;
+  color: #000;
 }
 .page .border_box .content .compose-input input:disabled {
   background: #d3e7ef;
@@ -194,16 +203,16 @@ hr {
   margin: 0 3px;
   font-size: 14px;
   color: #fff;
-  background-color: #74BAD8;
+  background-color: #0F719B;
   border: none;
   border-radius: 5px;
   padding: 5px 13px;
 }
 .page .home .wallet.border_box .content .compose-input button.active {
-  background-color: #0F719B;
+  background-color: #74BAD8;
 }
 .page .expense_item {
-  height: 100%;
+  height: calc(100% - 10px);
 }
 .page .expense_item .border_box {
   height: 100%;

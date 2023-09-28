@@ -14,7 +14,7 @@
 
         <!-- iOS Safari Set Up -->
         <link rel="apple-touch-icon" href="./Content/Image/Favicon/182x182.png"> <!-- 新增到桌面時的圖示 -->
-        <meta name="apple-mobile-web-app-status-bar-style" content="black"> <!-- 新增到桌面時 開啟後 上方狀態欄顯示顏色  -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="default"> <!-- 新增到桌面時 開啟後 上方狀態欄顯示顏色  -->
         <meta name="apple-mobile-web-app-capable" content="yes"> <!-- 是否使用全屏顯示 -->
 
         <!-- CSS -->
@@ -27,7 +27,7 @@
         <script src="./Content/JS/base.js"></script>
     </head>
     <body>
-        <div id="vue--js" class="wh100">
+        <div id="vue--js" class="wh100 page_width_limit">
             <header>
                 旅遊公用金
             </header>
@@ -515,7 +515,7 @@
                     //
                     CallApi: function(getParams, callBackFun) {
                         let v_this = this;
-                        let url = "https://script.google.com/macros/s/AKfycbxCvdsen53ycVIfv_DTUhyHLIS24SyHURBucXPM5G3yNnaJMgCbnSom2aoyUIGkG-5DGg/exec";
+                        let url = "https://script.google.com/macros/s/AKfycbzlCRm3-UNRV0LcpzBz8T3pAJ5V1XQtEoYnQ9mjxCb7NKKyUguWFI5Q2mX_UDlBr3IDGQ/exec";
 
                         getParams.account = extCookie.getCookie("_account"),
                         getParams.token   = extCookie.getCookie("_token"),
