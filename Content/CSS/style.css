@@ -84,6 +84,7 @@ hr {
 
 .popup {
   top: 0;
+  left: 0;
   position: absolute;
   background-color: rgba(0, 0, 0, 0.5215686275);
   display: flex;
@@ -171,6 +172,7 @@ hr {
 }
 .page .border_box .content .compose-input input:disabled {
   background: #d3e7ef;
+  color: #000;
 }
 .page .border_box .content .compose-input.password input {
   padding-right: 40px;

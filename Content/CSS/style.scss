@@ -88,6 +88,7 @@ hr{
 
 .popup{
     top: 0;
+    left: 0;
     position: absolute;
     background-color: #00000085;
     display: flex;
@@ -176,6 +177,7 @@ hr{
 
                     &:disabled{
                         background: #d3e7ef;
+                        color: #000;
                     }
                 }
 
