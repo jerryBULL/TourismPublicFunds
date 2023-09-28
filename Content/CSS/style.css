@@ -172,7 +172,10 @@ hr {
 }
 .page .border_box .content .compose-input input:disabled {
   background: #d3e7ef;
-  color: #000;
+  color: #797979;
+  opacity: 1;
+  -webkit-opacity: 1;
+  -webkit-text-fill-color: #797979;
 }
 .page .border_box .content .compose-input.password input {
   padding-right: 40px;
@@ -190,6 +193,10 @@ hr {
 }
 .page .border_box .content .compose-input.password .eye.close {
   background-image: url(./../Image/eye_close.svg);
+}
+.page .home {
+  overflow-y: auto;
+  height: calc(100% - 10px);
 }
 .page .home .wallet {
   margin-bottom: 20px;
@@ -297,6 +304,7 @@ hr {
 .login .border_box {
   background-color: #fff;
   border-radius: 8px;
+  margin: 0 10px;
 }
 .login .border_box .title {
   padding-top: 10px;

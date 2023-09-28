@@ -177,7 +177,11 @@ hr{
 
                     &:disabled{
                         background: #d3e7ef;
-                        color: #000;
+                        color: #797979;
+
+                        opacity: 1;
+                        -webkit-opacity:1;
+                        -webkit-text-fill-color:#797979;
                     }
                 }
 
@@ -207,6 +211,9 @@ hr{
     }
 
     .home{
+        overflow-y: auto;
+        height: calc(100% - 10px);
+
         .wallet{
             margin-bottom: 20px;
 
@@ -339,6 +346,7 @@ hr{
     .border_box{
         background-color: #fff;
         border-radius: 8px;
+        margin: 0 10px;
 
         .title{
             padding-top: 10px;
