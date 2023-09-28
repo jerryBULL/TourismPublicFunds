@@ -247,6 +247,9 @@ hr {
   height: calc(100% - 40px);
   overflow-y: scroll;
 }
+.page .expense_item .expense_item_list div:nth-child(even) .border_box {
+  border-color: #4DD182;
+}
 .page .operation_record {
   height: calc(100% - 40px);
 }
@@ -264,6 +267,9 @@ hr {
   padding: 10px;
   height: calc(100% - 40px);
   overflow-y: scroll;
+}
+.page .operation_record .operation_record_list div:nth-child(even) .border_box {
+  border-color: #4DD182;
 }
 
 .login {

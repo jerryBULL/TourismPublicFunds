@@ -279,6 +279,10 @@ hr{
             padding: 10px;
             height: calc(100% - 40px);
             overflow-y: scroll;
+
+            div:nth-child(even) .border_box{
+                border-color: #4DD182;
+            }
         }
     }
     .operation_record{
@@ -301,6 +305,10 @@ hr{
             padding: 10px;
             height: calc(100% - 40px);
             overflow-y: scroll;
+
+            div:nth-child(even) .border_box{
+                border-color: #4DD182;
+            }
         }
     }
 }

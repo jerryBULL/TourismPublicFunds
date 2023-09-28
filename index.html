@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <title></title>
+        <title>旅遊公用金</title>
         <meta name="description" content="">
 
         <link rel="icon" href="./Content/Image/Favicon/favicon.ico" sizes="any"> <!-- 瀏覽器 icon -->
@@ -80,24 +80,6 @@
                     }
                 },
                 methods: {
-                    ArrayToQueryString: function (params) {
-                        var queryString = '';
-
-                        let keys   = Object.keys(params);
-                        let values = Object.values(params);
-
-                        for (var i = 0; i < keys.length; i++) {
-                            var key = encodeURIComponent(keys[i]);
-                            var value = encodeURIComponent(values[i]);
-                            if (i > 0) {
-                                queryString += '&'; // 添加参数分隔符
-                            }
-                            queryString += key + '=' + value;
-                        }
-
-                        return queryString;
-                    },
-                    //
                     Login: function() {
                         let v_this = this;
 
@@ -126,17 +108,16 @@
 
                         v_this.CallApi({
                             method: "Login",
-                        }, {
                             account: v_this.account,
                             pwd: v_this.password,
-                        },callBackFun);
+                        }, callBackFun);
                     },
                     //
-                    CallApi: function(getParams, postParams, callBackFun) {
+                    CallApi: function(getParams, callBackFun) {
                         let v_this = this;
-                        let url = "https://script.google.com/macros/s/AKfycbwQfW_XT2IVyUWzrpl3U5RF9fFVqCRNHlUrFNT7zNwqQUqy6v6gmQ9LADAJtpR5ef5i1A/exec";
+                        let url = "https://script.google.com/macros/s/AKfycbxCvdsen53ycVIfv_DTUhyHLIS24SyHURBucXPM5G3yNnaJMgCbnSom2aoyUIGkG-5DGg/exec";
 
-                        axiosAjax.RequsetPost(url, getParams, postParams)
+                        axiosAjax.RequsetGet(url, getParams)
                             .then(res => {
                                 v_this.isLoading = false;
 
