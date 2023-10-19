@@ -127,7 +127,7 @@
     
                                         <div class="action_box">
                                             <button class="update" @click="OpenUpdateExpenseItem(idx, info)">修改</button>
-                                            <button class="delete" @click="DeleteExpenseItem(idx)">刪除</button>
+                                            <button class="delete" @click="DeleteExpenseItem(info[4], idx)">刪除</button>
                                         </div>
                                     </div>
 
@@ -151,7 +151,7 @@
                                         <div class="spaceH1"></div>
 
                                         <div class="action_box">
-                                            <button class="confirm" @click="UpdateExpenseItem(idx)">確認</button>
+                                            <button class="confirm" @click="UpdateExpenseItem(info[4])">確認</button>
                                             <button class="close" @click="CloseUpdateExpenseItem()">關閉</button>
                                         </div>
                                     </div>
@@ -458,7 +458,7 @@
                             change_amount: v_this.addItemAmount,
                         }, callBackFun);
                     },
-                    UpdateExpenseItem: function(idx) {
+                    UpdateExpenseItem: function(id) {
                         let v_this = this;
 
                         if(v_this.isLoading){
@@ -481,12 +481,12 @@
 
                         v_this.CallApi({
                             method: "UpdateExpenseItem",
-                            id: v_this.updateExpenseItems.id,
+                            id: id,
                             item: v_this.updateExpenseItems.item,
                             change_amount: v_this.updateExpenseItems.changeAmount,
                         }, callBackFun);
                     },
-                    DeleteExpenseItem: function(idx) {
+                    DeleteExpenseItem: function(id, idx) {
                         let v_this = this;
 
                         if(v_this.isLoading){
@@ -509,13 +509,13 @@
 
                         v_this.CallApi({
                             method: "DeleteExpenseItem",
-                            id: idx,
+                            id: id,
                         }, callBackFun);
                     },
                     //
                     CallApi: function(getParams, callBackFun) {
                         let v_this = this;
-                        let url = "https://script.google.com/macros/s/AKfycbzlCRm3-UNRV0LcpzBz8T3pAJ5V1XQtEoYnQ9mjxCb7NKKyUguWFI5Q2mX_UDlBr3IDGQ/exec";
+                        let url = "https://script.google.com/macros/s/AKfycbyTSTsxsE9cb_Gd0ULLOGzYKI5KjAJAoG5-VwIOS2hoEygg3-u3FSsFyVWzr5ZE9RpByg/exec";
 
                         getParams.account = extCookie.getCookie("_account"),
                         getParams.token   = extCookie.getCookie("_token"),
